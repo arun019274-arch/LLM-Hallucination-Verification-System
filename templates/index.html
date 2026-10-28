@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>HalluCheck</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<!-- ============================ HOME ============================ -->
+
+<section>
+
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Manuscript review for AI text</span>
+
+        <h1>Catch what the model made up.</h1>
+
+        <p class="lede">
+          Paste any LLM response in. HalluCheck reads it like an editor reads a draft — marking what's confirmed, what's shaky, and what was invented outright.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/register">
+            Create free account
+          </a>
+
+          <a class="btn btn-ghost" href="/login">
+            Log in
+          </a>
+        </div>
+
+      </div>
+
+
+      <div class="manuscript">
+
+        <span class="manuscript-label">
+          Sample scan · 3 claims reviewed
+        </span>
+
+        The Eiffel Tower was completed in
+
+        <span class="mark mark-verified">
+          1889
+        </span>
+
+        and stands
+
+        <span class="mark mark-flagged">
+          412 metres tall
+          <span class="margin-note">
+            ✕ actual height: 330m
+          </span>
+        </span>.
+
+        It was
+
+        <span class="mark mark-caution">
+          the tallest man-made structure until 1930
+        </span>.
+
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <section class="stat-band">
+
+    <div class="container">
+
+      <div class="stat-block">
+        <span class="num">94.2%</span>
+        <span class="lbl">
+          Precision on flagged claims across benchmark test sets
+        </span>
+      </div>
+
+
+      <div class="stat-block">
+        <span class="num">3.1s</span>
+        <span class="lbl">
+          Average time to scan a 500-word response
+        </span>
+      </div>
+
+
+      <div class="stat-block">
+        <span class="num">12k+</span>
+        <span class="lbl">
+          Claims cross-checked against reference sources so far
+        </span>
+      </div>
+
+
+      <div class="stat-block">
+        <span class="num">3</span>
+        <span class="lbl">
+          Confidence tiers — verified, uncertain, fabricated
+        </span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="features">
+
+    <div class="container">
+
+      <span class="eyebrow">What it does</span>
+
+      <h2 style="font-size:1.6rem;">
+        Four checks, run on every scan
+      </h2>
+
+
+      <div class="feature-grid">
+
+        <div class="feature-card">
+          <div class="glyph">01</div>
+          <h3>Claim isolation</h3>
+          <p>
+            Splits a response into individually checkable factual statements, so a false detail can't hide inside a true sentence.
+          </p>
+        </div>
+
+
+        <div class="feature-card">
+          <div class="glyph">02</div>
+          <h3>Source cross-reference</h3>
+          <p>
+            Checks each claim against reference data and flags anything that doesn't match or can't be found.
+          </p>
+        </div>
+
+
+        <div class="feature-card">
+          <div class="glyph">03</div>
+          <h3>Confidence scoring</h3>
+          <p>
+            Every claim gets a numeric score, not just a label — so you can decide your own threshold for what to trust.
+          </p>
+        </div>
+
+
+        <div class="feature-card">
+          <div class="glyph">04</div>
+          <h3>Exportable reports</h3>
+          <p>
+            Save a scan's full breakdown to revisit later or attach as evidence in your own review process.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="steps">
+
+    <div class="container">
+
+      <span class="eyebrow">How a scan works</span>
+
+      <h2 style="font-size:1.6rem;">
+        Three passes, same as any careful editor
+      </h2>
+
+
+      <div class="steps-grid">
+
+
+        <div class="step">
+          <div class="step-mark">1</div>
+          <h3>Paste the text</h3>
+          <p>
+            Drop in a model's answer, a generated summary, or any passage you don't fully trust yet.
+          </p>
+        </div>
+
+
+        <div class="step">
+          <div class="step-mark">2</div>
+          <h3>Claims get isolated</h3>
+          <p>
+            Each factual claim is pulled out on its own, so nothing hides inside a well-written sentence.
+          </p>
+        </div>
+
+
+        <div class="step">
+          <div class="step-mark">3</div>
+          <h3>Each claim is scored</h3>
+          <p>
+            Verified, uncertain, or fabricated — with a confidence score and the reasoning behind it.
+          </p>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="quote-band">
+
+    <div class="container">
+
+      <span class="eyebrow">Who it's for</span>
+
+      <h2 style="font-size:1.6rem;">
+        Anywhere an AI answer needs a second read
+      </h2>
+
+
+      <div class="quote-grid">
+
+
+        <div class="quote-card">
+          <p>
+            "Before a generated summary goes into a report, it goes through a scan first."
+          </p>
+          <span class="who">
+            Research &amp; analysis teams
+          </span>
+        </div>
+
+
+        <div class="quote-card">
+          <p>
+            "Students checking AI-assisted drafts against their own sources before submitting."
+          </p>
+          <span class="who">
+            Academic use
+          </span>
+        </div>
+
+
+        <div class="quote-card">
+          <p>
+            "Support answers get scanned before they're sent, not after a customer catches the mistake."
+          </p>
+          <span class="who">
+            Customer-facing teams
+          </span>
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="cta-band">
+
+    <div class="container">
+
+      <h2>
+        Run your first scan free
+      </h2>
+
+      <p>
+        No card required. Takes about thirty seconds.
+      </p>
+
+      <a class="btn btn-primary" href="/register">
+        Create free account
+      </a>
+
+    </div>
+
+  </section>
+
+
+</section>
+
+
+</body>
+
+</html>

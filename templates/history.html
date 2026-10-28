@@ -1,0 +1,80 @@
+
+<body>
+    <div class="history-container">
+        <h1>HalluCheck - Scan History</h1>
+
+        <p>Welcome, {{ username }}!</p>
+
+        <nav>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a> |
+            <a href="{{ url_for('history') }}">History</a> |
+            <a href="{{ url_for('about') }}">About</a> |
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+
+        <hr>
+
+        {% if scans %}
+            <h2>Your Previous Scans</h2>
+
+            {% for scan in scans %}
+                <div class="scan-card">
+                    <h3>Scan #{{ scan.id }}</h3>
+
+                    <p>
+                        <strong>Date:</strong>
+                        {{ scan.created_at.strftime('%d-%m-%Y %I:%M %p') }}
+                    </p>
+
+                    <p><strong>Submitted Text:</strong></p>
+                    <p class="scan-text">{{ scan.input_text }}</p>
+
+                    <hr>
+
+                    <p>Total Claims: {{ scan.total }}</p>
+                    <p>Supported: {{ scan.supported }}</p>
+                    <p>Hallucination Suspected: {{ scan.suspected }}</p>
+                    <p>Unverified: {{ scan.unverified }}</p>
+
+                    <details>
+                        <summary>View Detailed Results</summary>
+
+                        {% for result in scan.results %}
+                            <div class="result-item">
+                                <p>
+                                    <strong>Claim:</strong>
+                                    {{ result.get('claim', 'Not available') }}
+                                </p>
+
+                                <p>
+                                    <strong>Status:</strong>
+                                    {{ result.get('status', 'Unknown') }}
+                                </p>
+
+                                <p>
+                                    <strong>Evidence:</strong>
+                                    {{ result.get('evidence', 'Not available') }}
+                                </p>
+
+                                <p>
+                                    <strong>Reason:</strong>
+                                    {{ result.get('reason', 'Not available') }}
+                                </p>
+                            </div>
+                        {% else %}
+                            <p>No detailed results available.</p>
+                        {% endfor %}
+                    </details>
+                </div>
+                <hr>
+            {% endfor %}
+
+        {% else %}
+            <h3>No scan history found.</h3>
+            <p>Submit text on your dashboard to see your previous scans here.</p>
+            <a href="{{ url_for('dashboard') }}">Verify Text</a>
+        {% endif %}
+    </div>
+</body>
+</html>
+

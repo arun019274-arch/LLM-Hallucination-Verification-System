@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - HalluCheck</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .result-card {
+            padding: 16px;
+            margin-top: 16px;
+            border: 1px solid #e4e7ec;
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .supported {
+            color: #067647;
+            background: #ecfdf3;
+        }
+
+        .suspected {
+            color: #b42318;
+            background: #fef3f2;
+        }
+
+        .unverified {
+            color: #b54708;
+            background: #fffaeb;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .summary-item {
+            padding: 14px;
+            border: 1px solid #e4e7ec;
+            border-radius: 8px;
+        }
+
+        .summary-number {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .overall-result,
+        .error-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .overall-result {
+            background: #f2f4f7;
+        }
+
+        .error-message {
+            background: #fef3f2;
+            color: #b42318;
+        }
+
+        #textInput {
+            width: 100%;
+            min-height: 230px;
+            box-sizing: border-box;
+            padding: 12px;
+            resize: vertical;
+            font: inherit;
+        }
+
+        .evidence {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .note {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--ink-soft, #667085);
+        }
+
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .dashboard-nav a {
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .history-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 750px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Navigation -->
+    <header class="dashboard-nav">
+        <a href="{{ url_for('dashboard') }}" class="brand">
+            HalluCheck
+        </a>
+
+        <nav class="nav-links">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Heading -->
+    <section class="dash-header">
+        <span class="eyebrow">New scan</span>
+
+        <h1 style="font-size: 1.8rem;">
+            Welcome, {{ username|default('User') }}
+        </h1>
+
+        <p>Check an AI-generated answer against your knowledge graph.</p>
+
+        <a class="history-link" href="{{ url_for('history') }}">
+            View your previous scans →
+        </a>
+    </section>
+
+    <!-- Dashboard -->
+    <main class="container dash-grid">
+
+        <!-- Input panel -->
+        <section class="input-panel sheet sheet-pad">
+            <span class="eyebrow">Input</span>
+            <h2>LLM Output</h2>
+
+            <form method="POST" action="{{ url_for('verify') }}">
+                <div class="field">
+                    <label for="textInput">AI-generated text</label>
+
+                    <textarea
+                        id="textInput"
+                        name="textInput"
+                        placeholder="Paste AI-generated text here..."
+                        required
+                    >{{ submitted_text|default('') }}</textarea>
+                </div>
+
+                <div class="toolbar">
+                    <span class="counter">Ready to scan</span>
+
+                    <button type="submit" class="btn btn-primary">
+                        Run Scan
+                    </button>
+                </div>
+            </form>
+
+            {% if error %}
+                <div class="error-message" role="alert">
+                    {{ error }}
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Results panel -->
+        <section class="results-panel sheet sheet-pad">
+            <span class="eyebrow">Results</span>
+
+            {% if report %}
+                <h2>Verification Summary</h2>
+
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        Total claims
+                        <span class="summary-number">
+                            {{ report.total }}
+                        </span>
+                    </div>
+
+                    <div class="summary-item">
+                        Supported
+                        <span class="summary-number">
+                            {{ report.supported }}
+                        </span>
+                    </div>
+
+                    <div class="summary-item">
+                        Suspected
+                        <span class="summary-number">
+                            {{ report.suspected }}
+                        </span>
+                    </div>
+
+                    <div class="summary-item">
+                        Unverified
+                        <span class="summary-number">
+                            {{ report.unverified }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="overall-result">
+                    <strong>Overall result:</strong>
+
+                    {% if report.suspected > 0 %}
+                        Review needed. Some claims may conflict
+                        with the available graph evidence.
+                    {% elif report.unverified > 0 %}
+                        More evidence is needed to verify some claims.
+                    {% else %}
+                        All claims match the available graph evidence
+                        according to the current checker.
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <h2>Claim-by-Claim Analysis</h2>
+
+                {% for item in report.results %}
+                    <article class="result-card">
+                        <h3>Claim {{ loop.index }}</h3>
+
+                        <p><strong>Claim:</strong></p>
+                        <p>{{ item.claim }}</p>
+
+                        <p>
+                            <strong>Status:</strong>
+
+                            {% if item.status == "SUPPORTED" %}
+                                <span class="status supported">
+                                    SUPPORTED
+                                </span>
+                            {% elif item.status == "HALLUCINATION SUSPECTED" %}
+                                <span class="status suspected">
+                                    HALLUCINATION SUSPECTED
+                                </span>
+                            {% else %}
+                                <span class="status unverified">
+                                    UNVERIFIED
+                                </span>
+                            {% endif %}
+                        </p>
+
+                        <p>
+                            <strong>Evidence coverage:</strong>
+                            {{ "%.1f"|format(item.coverage * 100) }}%
+                        </p>
+
+                        <p><strong>Evidence:</strong></p>
+                        <p class="evidence">{{ item.evidence }}</p>
+
+                        <p><strong>Reason:</strong></p>
+                        <p>{{ item.reason }}</p>
+                    </article>
+                {% else %}
+                    <p>No claims were found in the submitted text.</p>
+                {% endfor %}
+
+                <p class="note">
+                    Results depend on the information in your knowledge
+                    graph and the checker's logic. Supported does not
+                    guarantee that a claim is true.
+                </p>
+
+                <a href="{{ url_for('history') }}" class="history-link">
+                    View saved scan history →
+                </a>
+
+            {% else %}
+                <h2>Your results will appear here</h2>
+
+                <p>
+                    Paste an AI-generated answer and click
+                    <strong>Run Scan</strong>.
+                </p>
+
+                <p class="note">
+                    Your report will show claim status, evidence coverage,
+                    supporting evidence, and explanations.
+                </p>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer style="margin-top: 30px; padding-bottom: 20px;">
+        <p class="note">
+            HalluCheck — Knowledge Graph-Based LLM
+            Hallucination Verification System
+        </p>
+    </footer>
+
+</div>
+</body>
+</html>
